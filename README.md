@@ -1,4 +1,4 @@
-# Masumi Guard: Autonomous DeFi Risk & Strategy Management
+# Super Quant: Autonomous DeFi Risk & Strategy Management
 
 ## 🚀 Project Vision
 
