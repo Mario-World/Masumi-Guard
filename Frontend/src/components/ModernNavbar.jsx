@@ -91,11 +91,11 @@ function Navbar3DBackground() {
   return (
     <Canvas
       camera={{ position: [0, 0, 5], fov: 75 }}
-      style={{ 
-        position: 'absolute', 
-        top: 0, 
-        left: 0, 
-        width: '100%', 
+      style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
         height: '100%',
         pointerEvents: 'none',
         zIndex: 0
@@ -111,6 +111,37 @@ function Navbar3DBackground() {
   );
 }
 
+function NavLink({ to, pathname, children }) {
+  const [isHovered, setIsHovered] = useState(false);
+  const isActive = pathname === to || (to === '/agents' && pathname === '/');
+
+  const linkStyle = {
+    color: isActive ? '#1fc7d4' : (isHovered ? '#1fc7d4' : '#ffffff'),
+    textDecoration: 'none',
+    fontSize: '18px',
+    fontWeight: isActive ? '700' : '500',
+    padding: '8px 15px',
+    margin: '0 10px',
+    borderRadius: '4px',
+    transition: 'color 0.3s, background-color 0.3s, transform 0.1s',
+    backgroundColor: isHovered ? 'rgba(31, 199, 212, 0.1)' : 'transparent',
+    transform: isHovered ? 'translateY(-2px)' : 'translateY(0)',
+    boxShadow: isHovered ? '0 4px 10px rgba(31, 199, 212, 0.2)' : 'none',
+    cursor: 'pointer',
+  };
+
+  return (
+    <Link
+      to={to}
+      style={linkStyle}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {children}
+    </Link>
+  );
+}
+
 function ModernNavbar() {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
@@ -123,23 +154,81 @@ function ModernNavbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const navbarStyle = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    zIndex: 1000,
+    height: '70px',
+    transition: 'background-color 0.3s, backdrop-filter 0.3s',
+    backgroundColor: scrolled ? 'rgba(10, 25, 41, 0.95)' : 'rgba(10, 25, 41, 0.7)',
+    backdropFilter: scrolled ? 'blur(10px)' : 'none',
+    boxShadow: scrolled ? '0 2px 10px rgba(0, 0, 0, 0.5)' : 'none',
+  };
+
+  const contentStyle = {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '0 20px',
+    position: 'relative',
+    zIndex: 1,
+  };
+
+  const brandStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    textDecoration: 'none',
+    color: '#ffffff',
+    fontSize: '24px',
+    fontWeight: '700',
+    cursor: 'pointer',
+  };
+
+  const logoTextStyle = {
+    marginLeft: '10px',
+  };
+
+  const linksStyle = {
+    display: 'flex',
+    flexGrow: 1,
+    justifyContent: 'center', // Center the links
+    alignItems: 'center',
+  };
+
+  const backgroundContainerStyle = {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
+  };
+
   return (
-    <nav className={`nav ${scrolled ? 'nav-scrolled' : ''}`}>
-      <div className="nav-3d-background">
+    <nav style={navbarStyle}>
+      <div style={backgroundContainerStyle}>
         <Navbar3DBackground />
       </div>
-      <div className="nav-content">
-        <div className="nav-brand">
+      <div style={contentStyle}>
+        <Link to="/agents" style={brandStyle}>
           <Logo size={32} />
-          <span>Super Quant</span>
-        </div>
-        <div className="nav-links">
-          <Link to="/agents" className={`nav-link ${location.pathname === '/agents' || location.pathname === '/' ? 'active' : ''}`}>
-            Agents
-          </Link>
-          <Link to="/risk-management" className={`nav-link ${location.pathname === '/risk-management' ? 'active' : ''}`}>
-            Risk
-          </Link>
+          <span style={logoTextStyle}>Super Quant</span>
+        </Link>
+        <div style={linksStyle}>
+          <NavLink to="/agents" pathname={location.pathname}>
+            Platform
+          </NavLink>
+          <NavLink to="/risk-management" pathname={location.pathname}>
+            Risk Management Agent
+          </NavLink>
+          <NavLink to="/hedge-fund" pathname={location.pathname}>
+            Hedge Fund Agent
+          </NavLink>
         </div>
       </div>
     </nav>
@@ -147,4 +236,3 @@ function ModernNavbar() {
 }
 
 export default ModernNavbar;
-
